@@ -1,0 +1,36 @@
+# --- Global ---
+.git
+.gitignore
+.env
+docker-compose.yml
+README.md
+LICENSE
+node_modules
+vendor
+.idea
+.vscode
+.DS_Store
+*.log
+*.sqlite
+
+# --- Backend ---
+backend/node_modules
+backend/vendor
+backend/storage
+backend/bootstrap/cache
+backend/.env
+backend/tests
+backend/phpunit.xml
+backend/.phpunit.result.cache
+
+# --- Frontend ---
+frontend/node_modules
+frontend/dist
+frontend/.env
+frontend/.vite
+frontend/.eslintcache
+
+# --- Docker system ---
+docker/php/.phpunit.result.cache
+docker/php/vendor
+docker/php/node_modules
