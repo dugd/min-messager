@@ -19,8 +19,12 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'username',
         'email',
         'password',
+        'avatar_url',
+        'bio',
+        'visibility',
     ];
 
     /**
@@ -44,5 +48,55 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Get conversations where the user is a participant.
+     */
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants')
+            ->withPivot('role', 'joined_at')
+            ->withTimestamps();
+    }
+
+    /**
+     * Get conversations owned by the user.
+     */
+    public function ownedConversations()
+    {
+        return $this->hasMany(Conversation::class, 'owner_id');
+    }
+
+    /**
+     * Get messages sent by the user.
+     */
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    /**
+     * Get posts authored by the user.
+     */
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'author_id');
+    }
+
+    /**
+     * Get comments made by the user.
+     */
+    public function comments()
+    {
+        return $this->hasMany(PostComment::class);
+    }
+
+    /**
+     * Get likes made by the user.
+     */
+    public function likes()
+    {
+        return $this->hasMany(PostLike::class);
     }
 }
