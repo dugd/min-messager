@@ -1,6 +1,7 @@
 <?php
 
-use App\Http\Controllers\AuthController;    
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -10,4 +11,7 @@ Route::prefix('auth')->group(function () {
 });
 
 Route::get('/me', fn (\Illuminate\Http\Request $r) => $r->user())
+    ->middleware('auth:sanctum');
+
+Route::get('/users/search', [UserController::class, 'search'])
     ->middleware('auth:sanctum');
