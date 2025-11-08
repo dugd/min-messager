@@ -8,7 +8,7 @@ export default function Home() {
       <header className="p-6 flex justify-between items-center">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-8 h-8 text-primary" />
-          <span className="text-2xl">Min Messenger</span>
+          <span className="text-2xl text-nowrap">Min Messenger</span>
         </div>
         <div className="flex gap-3">
           <Link to="/login">

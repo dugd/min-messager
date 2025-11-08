@@ -1,10 +1,10 @@
+import { Grid, Heart, MessageCircle } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { AppHeader } from "../components/AppHeader";
 import { Sidebar } from "../components/Sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
-import { MessageCircle, Grid, Heart } from "lucide-react";
 
 const mockPosts = [
   { id: "1", content: "Чудовий день для нових проєктів! 🚀", likes: 24, time: "2 години тому" },
@@ -39,8 +39,9 @@ export default function Profile() {
                   <p className="mb-6">
                     UX/UI Designer | Створюю красиві та зручні інтерфейси 🎨
                   </p>
-
-                  <div className="flex gap-6 justify-center md:justify-start mb-6">
+                  
+                  {/* won't be implemented */}
+                  {/* <div className="flex gap-6 justify-center md:justify-start mb-6">
                     <div>
                       <div className="text-2xl">156</div>
                       <div className="text-sm text-muted-foreground">Постів</div>
@@ -53,7 +54,7 @@ export default function Profile() {
                       <div className="text-2xl">291</div>
                       <div className="text-sm text-muted-foreground">Підписки</div>
                     </div>
-                  </div>
+                  </div> */}
 
                   <div className="flex gap-3 justify-center md:justify-start">
                     <Button className="bg-primary hover:bg-primary/90">
