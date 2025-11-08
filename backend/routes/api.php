@@ -11,13 +11,12 @@ Route::prefix('auth')->group(function () {
     Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
 });
 
-Route::get('/me', fn (\Illuminate\Http\Request $r) => $r->user())
-    ->middleware('auth:sanctum');
-
-Route::get('/users/search', [UserController::class, 'search'])
-    ->middleware('auth:sanctum');
-
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/me', [UserController::class, 'me']);
+    Route::patch('/users/me', [UserController::class, 'update']);
+    Route::get('/users/profiles/{user}', [UserController::class, 'show']);
+    Route::get('/users/search', [UserController::class, 'search']);
+
     Route::post('/messages', [MessageController::class, 'direct']);
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'group']);
     Route::put('/messages/{message}', [MessageController::class, 'update']);
