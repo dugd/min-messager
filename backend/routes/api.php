@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MessageController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('auth')->group(function () {
@@ -15,3 +16,7 @@ Route::get('/me', fn (\Illuminate\Http\Request $r) => $r->user())
 
 Route::get('/users/search', [UserController::class, 'search'])
     ->middleware('auth:sanctum');
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::apiResource('messages', MessageController::class);
+});
