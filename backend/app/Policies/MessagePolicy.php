@@ -12,6 +12,10 @@ class MessagePolicy
      */
     public function view(User $user, Message $message): bool
     {
+        if ($message->deleted_at != null) {
+            return false;
+        }
+
         return $message->conversation->participants()
             ->where('user_id', $user->id)
             ->exists();
@@ -22,6 +26,10 @@ class MessagePolicy
      */
     public function update(User $user, Message $message): bool
     {
+        if ($message->deleted_at != null) {
+            return false;
+        }
+
         return $user->id === $message->sender_id;
     }
 
@@ -30,6 +38,10 @@ class MessagePolicy
      */
     public function delete(User $user, Message $message): bool
     {
+        if ($message->deleted_at != null) {
+            return false;
+        }
+
         if ($user->id === $message->sender_id) {
             return true;
         }
