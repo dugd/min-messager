@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\SendMessageRequest;
+use App\Http\Requests\UpdateMessageRequest;
+use App\Models\Message;
 use App\Services\ConversationService;
 use App\Services\MessageService;
 use Illuminate\Http\Request;
@@ -38,16 +40,33 @@ class MessageController extends Controller
     /**
      * Update message content.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateMessageRequest $request, Message $message)
     {
-        //
+        $this->authorize('update', $message);
+
+        $data = $request->validated();
+
+        $message->update([
+            'body' => $data['body'],
+            'edited_at' => now(),
+        ]);
+
+        // Broadcast MessageUpdated event
+
+        return response()->json($message);
     }
 
     /**
      * Delete message.
      */
-    public function destroy(string $id)
+    public function destroy(Message $message)
     {
-        //
+        $this->authorize('delete', $message);
+
+        $message->update(['deleted_at' => now()]);
+
+        // Broadcast MessageDeleted event
+
+        return response()->json(['message' => 'Message deleted'], 200);
     }
 }
