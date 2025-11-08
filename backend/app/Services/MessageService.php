@@ -22,4 +22,29 @@ class MessageService
             'body' => $body,
         ]);
     }
+
+    /**
+     * Update the body of a message.
+     *
+     * @param Message $message
+     * @param string $body
+     * @return Message
+     */
+    public function update(Message $message, string $body): Message {
+        $message->update([
+            'body' => $body,
+            'edited_at' => now(),
+        ]);
+        return $message;
+    }
+
+    /**
+     * Mark a message as deleted.
+     *
+     * @param Message $message
+     * @return void
+     */
+    public function delete(Message $message): void {
+        $message->update(['deleted_at' => now()]);
+    }
 }

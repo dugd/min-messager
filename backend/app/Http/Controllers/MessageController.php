@@ -48,6 +48,8 @@ class MessageController extends Controller
 
         $message = $this->messageService->create($conversation->id, auth()->id(), $data['body']);
 
+        // TODO: Broadcast message to group members
+
         return response()->json([
             'message' => $message,
         ]);
@@ -62,10 +64,7 @@ class MessageController extends Controller
 
         $data = $request->validated();
 
-        $message->update([
-            'body' => $data['body'],
-            'edited_at' => now(),
-        ]);
+        $this->messageService->update($message, $data['body']);
 
         // Broadcast MessageUpdated event
 
@@ -79,7 +78,7 @@ class MessageController extends Controller
     {
         $this->authorize('delete', $message);
 
-        $message->update(['deleted_at' => now()]);
+        $this->messageService->delete($message);
 
         // Broadcast MessageDeleted event
 
