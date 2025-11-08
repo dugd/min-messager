@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\SendMessageRequest;
+use App\Http\Requests\SendDirectMessageRequest;
+use App\Http\Requests\SendGroupMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
+use App\Models\Conversation;
 use App\Models\Message;
 use App\Services\ConversationService;
 use App\Services\MessageService;
-use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
@@ -19,7 +20,7 @@ class MessageController extends Controller
     /**
      * Send direct message to user.
      */
-    public function store(SendMessageRequest $request)
+    public function direct(SendDirectMessageRequest $request)
     {
         $data = $request->validated();
 
@@ -31,6 +32,21 @@ class MessageController extends Controller
         $message = $this->messageService->create($conversation->id, auth()->id(), $data['body']);
 
         // TODO: Broadcast message to receiver
+
+        return response()->json([
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Send message to group conversation.
+     */
+    public function group(SendGroupMessageRequest $request, Conversation $conversation) {
+        $this->authorize('send', $conversation);
+
+        $data = $request->validated();
+
+        $message = $this->messageService->create($conversation->id, auth()->id(), $data['body']);
 
         return response()->json([
             'message' => $message,

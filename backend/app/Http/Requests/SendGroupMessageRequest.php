@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SendMessageRequest extends FormRequest
+class SendGroupMessageRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true; # blocklist check?
+        return true;
     }
 
     /**
@@ -22,10 +22,6 @@ class SendMessageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'recipient_id' => [
-                'required',
-                'exists:users,id',
-            ],
             'body' => [
                 'required',
                 'string',

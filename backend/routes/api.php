@@ -18,5 +18,8 @@ Route::get('/users/search', [UserController::class, 'search'])
     ->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('messages', MessageController::class);
+    Route::post('/messages', [MessageController::class, 'direct']);
+    Route::post('/conversations/{conversation}/messages', [MessageController::class, 'group']);
+    Route::put('/messages/{message}', [MessageController::class, 'update']);
+    Route::delete('/messages/{message}', [MessageController::class, 'destroy']);
 });
