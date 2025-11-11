@@ -1,30 +1,31 @@
-import type { AuthUser, AuthResponse, LogoutResponse } from '../types/auth';
-import { getToken } from '../utils/tokenStorage';
-
-const API_URL = import.meta.env.VITE_API_URL ?? 'http://localhost/api';
-
-// Helper to get auth headers
-function authHeader(): { Authorization?: string } {
-  const token = getToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
-}
+import axios, { type AxiosResponse } from 'axios';
+import api from '../api/client';
+import type { AuthResponse, AuthUser, LogoutResponse } from '../types/auth';
 
 
 // Generic GET and POST methods
 export async function post<T>(path: string, body?: unknown): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...authHeader() },
-    body: body ? JSON.stringify(body) : undefined,
-  });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json() as Promise<T>;
+  try {
+    const res: AxiosResponse<T> = await api.post(path, body);
+    return res.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data || error.message);
+    }
+    throw error;
+  }
 }
 
 export async function get<T>(path: string): Promise<T> {
-  const res = await fetch(`${API_URL}${path}`, { headers: { ...authHeader() } });
-  if (!res.ok) throw new Error(await res.text());
-  return res.json() as Promise<T>;
+  try {
+    const res: AxiosResponse<T> = await api.get(path);
+    return res.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data || error.message);
+    }
+    throw error;
+  }
 }
 
 
