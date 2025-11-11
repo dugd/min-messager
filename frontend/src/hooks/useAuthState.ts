@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { AuthApi } from '../services/api';
+import { AuthApi } from '../api/auth';
 import type { AuthState, AuthUser } from '../types/auth';
 import { getToken, removeToken, setToken } from '../utils/tokenStorage';
 

@@ -1,7 +1,5 @@
 import axios, { type AxiosResponse } from 'axios';
-import api from '../api/client';
-import type { AuthResponse, AuthUser, LogoutResponse } from '../types/auth';
-
+import api from './client';
 
 // Generic GET and POST methods
 export async function post<T>(path: string, body?: unknown): Promise<T> {
@@ -27,14 +25,3 @@ export async function get<T>(path: string): Promise<T> {
     throw error;
   }
 }
-
-
-// Auth endpoints
-export const AuthApi = {
-  register: (p: {name:string;username:string;email:string;password:string;password_confirmation:string}) =>
-    post<AuthResponse>('/auth/register', p),
-  login: (p: {email:string;password:string}) =>
-    post<AuthResponse>('/auth/login', p),
-  logout: () => post<LogoutResponse>('/auth/logout'),
-  me: () => get<AuthUser>('/me'),
-};
