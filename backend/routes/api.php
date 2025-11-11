@@ -19,6 +19,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/users/search', [UserController::class, 'search']);
 
     Route::post('/messages', [MessageController::class, 'direct']);
+    Route::get('/conversations/{conversation}/messages', [MessageController::class, 'messages']);
     Route::post('/conversations/{conversation}/messages', [MessageController::class, 'group']);
     Route::put('/messages/{message}', [MessageController::class, 'update']);
     Route::delete('/messages/{message}', [MessageController::class, 'destroy']);

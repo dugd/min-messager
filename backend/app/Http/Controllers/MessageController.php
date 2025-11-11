@@ -18,6 +18,25 @@ class MessageController extends Controller
     ) {}
 
     /**
+     * Get messages for conversation.
+     */
+    public function messages(\Illuminate\Http\Request $request, Conversation $conversation)
+    {
+        $this->authorize('view', $conversation);
+
+        $messages = $this->messageService->getMessages(
+            $conversation,
+            $request->query('before_id'),
+            $request->query('limit', 50)
+        );
+
+        return response()->json([
+            'conversation_id' => $conversation->id,
+            'messages' => $messages,
+        ]);
+    }
+
+    /**
      * Send direct message to user.
      */
     public function direct(SendDirectMessageRequest $request)
