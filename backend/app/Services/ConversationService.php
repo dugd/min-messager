@@ -21,6 +21,17 @@ class ConversationService
     }
 
     /**
+     * Get conversation by id with participants.
+     * @param int $conversationId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getConversationById(int $conversationId) {
+        $conversation = Conversation::with(['participants', 'lastMessage'])->findOrFail($conversationId);
+
+        return $conversation;
+    }
+
+    /**
      * Find or create a direct conversation between two users.
      *
      * @param int $user1Id

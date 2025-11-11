@@ -13,7 +13,9 @@ class ConversationPolicy
      */
     public function view(User $user, Conversation $conversation): bool
     {
-        return false;
+        return $conversation->participants()
+            ->where('user_id', $user->id)
+            ->exists();
     }
 
     /**
