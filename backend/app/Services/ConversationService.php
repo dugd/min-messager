@@ -7,6 +7,20 @@ use App\Models\Conversation;
 class ConversationService
 {
     /**
+     * List user conversations.
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+
+    public function indexUserConversations(int $userId) {
+        $conversations = Conversation::whereHas('participants', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->with(['participants', 'lastMessage'])->get();
+
+        return $conversations;
+    }
+
+    /**
      * Find or create a direct conversation between two users.
      *
      * @param int $user1Id

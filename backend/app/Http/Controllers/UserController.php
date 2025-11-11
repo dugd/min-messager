@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\ProfileResource;
 use App\Models\User;
 use App\Services\UserSearchService;
 use App\Services\UserService;
@@ -34,7 +35,7 @@ class UserController extends Controller
         $this->authorize('view', $user);
 
         return response()->json([
-            'user' => $user->only(['id', 'name', 'username', 'bio', 'avatar_url', 'created_at']),
+            'user' => new ProfileResource($user),
         ]);
     }
 
