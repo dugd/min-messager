@@ -1,8 +1,8 @@
+import { MessageSquare, Plus, Users } from "lucide-react";
 import { useState } from "react";
 import { AppHeader } from "../components/AppHeader";
-import { Sidebar } from "../components/Sidebar";
 import { GroupCreateModal } from "../components/GroupCreateModal";
-import { MessageSquare, Plus, Users } from "lucide-react";
+import { Sidebar } from "../components/Sidebar";
 import { Button } from "../components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
 import { Input } from "../components/ui/input";

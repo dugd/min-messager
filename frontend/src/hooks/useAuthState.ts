@@ -1,37 +1,16 @@
-import { useEffect, useState } from 'react';
-import { AuthApi } from '../api/auth';
-import type { AuthState, AuthUser } from '../types/auth';
-import { getToken, removeToken, setToken } from '../utils/tokenStorage';
+import type { AuthState } from '../types/auth';
+import { useAuthMe, useLogin, useLogout, useRegister } from './api/useAuth';
 
 // Custom hook for managing authentication state
 export function useAuthState(): AuthState {
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  // Refresh user data from server using stored token
-  const refreshMe = async () => {
-    const token = getToken();
-    if (!token) {
-      setUser(null);
-      return;
-    }
-    try {
-      setUser(await AuthApi.me());
-    } catch {
-      setUser(null);
-    }
-  };
-
-  // Initialize: fetch user on mount
-  useEffect(() => {
-    refreshMe().finally(() => setLoading(false));
-  }, []);
+  const { data: user = null, isLoading: loading, refetch } = useAuthMe();
+  const loginMutation = useLogin();
+  const registerMutation = useRegister();
+  const logoutMutation = useLogout();
 
   // Login with email and password
   const login = async (email: string, password: string) => {
-    const { user, token } = await AuthApi.login({ email, password });
-    setToken(token);
-    setUser(user);
+    await loginMutation.mutateAsync({ email, password });
   };
 
   // Register new user
@@ -42,20 +21,17 @@ export function useAuthState(): AuthState {
     password: string;
     password_confirmation: string;
   }) => {
-    const { user, token } = await AuthApi.register(p);
-    setToken(token);
-    setUser(user);
+    await registerMutation.mutateAsync(p);
   };
 
   // Logout current user
   const logout = async () => {
-    try {
-      await AuthApi.logout();
-    } catch {
-      // ignore errors
-    }
-    removeToken();
-    setUser(null);
+    await logoutMutation.mutateAsync();
+  };
+
+  // Refresh user data from server
+  const refreshMe = async () => {
+    await refetch();
   };
 
   return { user, loading, login, register, logout, refreshMe };
