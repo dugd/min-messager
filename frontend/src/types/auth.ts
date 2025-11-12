@@ -1,3 +1,5 @@
+import type { visibility } from './common';
+
 // User information returned from auth
 export type AuthUser = {
   id: number;
@@ -5,7 +7,7 @@ export type AuthUser = {
   username: string;
   email: string;
   avatar_url?: string;
-  visibility: 'public' | 'private';
+  visibility: visibility;
   created_at: string; // ISO date string
 };
 

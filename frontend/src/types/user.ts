@@ -1,3 +1,5 @@
+import type { role, visibility } from './common';
+
 // User-related types
 export type MyUser = {
   id: number;
@@ -6,7 +8,7 @@ export type MyUser = {
   email: string;
   avatar_url?: string;
   bio?: string;
-  visibility: 'public' | 'private';
+  visibility: visibility;
   created_at: string; // ISO date string
   updated_at: string; // ISO date string
 }
@@ -36,7 +38,7 @@ export type UserParticipant = {
   name: string;
   username: string;
   avatar_url?: string;
-  role: 'member' | 'admin' | 'owner';
+  role: role;
 }
 
 // Payload
