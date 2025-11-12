@@ -14,6 +14,7 @@ Route::prefix('auth')->group(function () {
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/me', [UserController::class, 'me']);
+    Route::get('users/me', [UserController::class, 'me']);
     Route::patch('/users/me', [UserController::class, 'update']);
     Route::get('/users/profiles/{user}', [UserController::class, 'show']);
     Route::get('/users/search', [UserController::class, 'search']);
