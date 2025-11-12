@@ -1,11 +1,11 @@
+import { Loader2, Lock, Mail, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { MessageCircle, Mail, Lock, Loader2 } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -45,7 +45,7 @@ export default function Login() {
     try {
       await login(email, password);
       navigate("/chats");
-    } catch (error) {
+    } catch {
       setErrors({ general: "Невірний email або пароль" });
     } finally {
       setIsLoading(false);

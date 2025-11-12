@@ -51,7 +51,9 @@ export function useAuthState(): AuthState {
   const logout = async () => {
     try {
       await AuthApi.logout();
-    } catch {}
+    } catch {
+      // ignore errors
+    }
     removeToken();
     setUser(null);
   };
