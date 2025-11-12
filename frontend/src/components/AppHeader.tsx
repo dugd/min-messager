@@ -1,5 +1,6 @@
 import { FileText, MessageCircle, MessageSquare, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
+import { useAuth } from "../hooks/useAuth";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Input } from "./ui/input";
 import { cn } from "./ui/utils";
@@ -8,6 +9,8 @@ export function AppHeader() {
   const location = useLocation();
   const isChatsActive = location.pathname.startsWith("/chats");
   const isPostsActive = location.pathname.startsWith("/posts");
+  
+  const { user: authUser } = useAuth();
 
   return (
     <header className="h-16 bg-card border-b border-border flex justify-between items-center px-4 gap-4 sticky top-0 z-50">
@@ -56,9 +59,9 @@ export function AppHeader() {
         </div>
       </div>
 
-      <Link to="/profile/me">
+      <Link to={`/profile/${authUser?.username}`}>
         <Avatar className="cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-          <AvatarImage src="https://api.dicebear.com/7.x/avataaars/svg?seed=user" />
+          <AvatarImage src={authUser?.avatar_url} />
           <AvatarFallback>ME</AvatarFallback>
         </Avatar>
       </Link>
