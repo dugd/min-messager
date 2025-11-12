@@ -7,18 +7,18 @@ import type { UpdateProfilePayload } from '../../types/user';
 export const userKeys = {
   all: ['users'] as const,
   profiles: () => [...userKeys.all, 'profile'] as const,
-  profile: (id: number) => [...userKeys.profiles(), id] as const,
+  profile: (username: string) => [...userKeys.profiles(), username] as const,
   me: () => [...userKeys.all, 'me'] as const,
   search: (query: string) => [...userKeys.all, 'search', query] as const,
   posts: (userId: number) => [...userKeys.all, 'posts', userId] as const,
 };
 
-// Get user profile by ID
-export const useUserProfile = (userId: number) => {
+// Get user profile by username
+export const useUserProfile = (username: string) => {
   return useQuery({
-    queryKey: userKeys.profile(userId),
-    queryFn: () => UserApi.getProfile(userId),
-    enabled: !!userId,
+    queryKey: userKeys.profile(username),
+    queryFn: () => UserApi.getProfileByUsername(username),
+    enabled: !!username,
   });
 };
 

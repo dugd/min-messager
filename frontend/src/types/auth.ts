@@ -4,6 +4,9 @@ export type AuthUser = {
   name: string;
   username: string;
   email: string;
+  avatar_url?: string;
+  visibility: 'public' | 'private';
+  created_at: string; // ISO date string
 };
 
 // Auth context state and methods
@@ -46,4 +49,8 @@ export type AuthResponse = {
 
 export type LogoutResponse = {
   ok: boolean;
+};
+
+export type MeResponse = {
+  user: AuthUser;
 };

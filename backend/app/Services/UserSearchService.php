@@ -29,7 +29,7 @@ class UserSearchService
         }
 
         return $searchQuery
-            ->select(['id', 'name', 'username', 'avatar_url'])
+            ->select(['id', 'name', 'username', 'avatar_url', 'created_at'])
             ->limit($limit)
             ->get();
     }

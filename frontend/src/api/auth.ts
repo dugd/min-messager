@@ -1,4 +1,4 @@
-import type { AuthResponse, AuthUser, LoginPayload, LogoutResponse, RegisterPayload } from '../types/auth';
+import type { AuthResponse, AuthUser, LoginPayload, LogoutResponse, MeResponse, RegisterPayload } from '../types/auth';
 import { get, post } from './utils';
 
 
@@ -9,5 +9,8 @@ export const AuthApi = {
   login: (p: LoginPayload) =>
     post<AuthResponse>('/auth/login', p),
   logout: () => post<LogoutResponse>('/auth/logout'),
-  me: () => get<AuthUser>('/me'),
+  me: async (): Promise<AuthUser> => {
+    const response = await get<MeResponse>('/me');
+    return response.user;
+  },
 };
