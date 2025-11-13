@@ -18,6 +18,24 @@ export type MessageWithSender = Message & {
     sender: UserParticipant;
 }
 
+export type SendDirectMessagePayload = {
+    recipient_id: number;
+    body: string;
+    type: messageType;
+    reply_to_id?: number | null;
+}
+
+// Payloads
+export type SendGroupMessagePayload = {
+    body: string;
+    type: messageType;
+    reply_to_id?: number | null;
+}
+
+export type MessageUpdatePayload = {
+    body?: string;
+}
+
 // Responses
 export type MessageResponse = {
     message: Message;
