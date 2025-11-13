@@ -87,9 +87,9 @@ class MessageController extends Controller
 
         // Broadcast MessageUpdated event
 
-        return response()->json(
+        return response()->json([
             'message' => $message,
-        );
+        ]);
     }
 
     /**
