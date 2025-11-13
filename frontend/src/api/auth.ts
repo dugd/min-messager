@@ -1,5 +1,5 @@
 import type { AuthResponse, AuthUser, LoginPayload, LogoutResponse, MeResponse, RegisterPayload } from '../types/auth';
-import { get, post } from './utils';
+import { get, post } from './shared/utils';
 
 
 // Auth endpoints
