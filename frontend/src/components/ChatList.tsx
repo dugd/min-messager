@@ -1,5 +1,5 @@
 import { Link, useParams } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { CustomAvatar } from './CustomAvatar';
 import { cn } from "./ui/utils";
 
 interface Chat {
@@ -79,10 +79,7 @@ export function ChatList() {
             id === chat.id && "bg-secondary"
           )}
         >
-          <Avatar>
-            <AvatarImage src={chat.avatar} />
-            <AvatarFallback>{chat.name[0]}</AvatarFallback>
-          </Avatar>
+          <CustomAvatar avatarUrl={chat.avatar} name={chat.name} size="lg"/>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-center justify-between mb-1">

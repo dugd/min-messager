@@ -1,12 +1,12 @@
+import { Search } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { CustomAvatar } from "./CustomAvatar";
+import { Button } from "./ui/button";
+import { Checkbox } from "./ui/checkbox";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "./ui/dialog";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
-import { Button } from "./ui/button";
-import { Checkbox } from "./ui/checkbox";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Search } from "lucide-react";
 
 interface User {
   id: string;
@@ -150,10 +150,7 @@ export function GroupCreateModal({ open, onOpenChange }: GroupCreateModalProps) 
                       checked={selectedUsers.includes(user.id)}
                       onCheckedChange={() => handleToggleUser(user.id)}
                     />
-                    <Avatar className="w-8 h-8">
-                      <AvatarImage src={user.avatar} />
-                      <AvatarFallback>{user.name[0]}</AvatarFallback>
-                    </Avatar>
+                    <CustomAvatar name={user.name} avatarUrl={user.avatar} size="sm"/>
                     <div className="flex-1 min-w-0">
                       <p className="truncate">{user.name}</p>
                       <p className="text-sm text-muted-foreground truncate">

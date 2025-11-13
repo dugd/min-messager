@@ -1,12 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+import { MoreVertical, Phone, Video } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import { AppHeader } from "../components/AppHeader";
-import { Sidebar } from "../components/Sidebar";
 import { ChatBubble } from "../components/ChatBubble";
+import { CustomAvatar } from "../components/CustomAvatar";
 import { MessageInput } from "../components/MessageInput";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
+import { Sidebar } from "../components/Sidebar";
 import { Button } from "../components/ui/button";
-import { MoreVertical, Phone, Video } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -95,10 +95,7 @@ export default function ChatView() {
           {/* Chat Header */}
           <div className="h-16 bg-card border-b border-border flex items-center justify-between px-4">
             <div className="flex items-center gap-3">
-              <Avatar>
-                <AvatarImage src={chat?.avatar} />
-                <AvatarFallback>{chat?.name?.[0]}</AvatarFallback>
-              </Avatar>
+              <CustomAvatar avatarUrl={chat.avatar} name={chat.name} size="md"/>
               <div>
                 <h3>{chat?.name || "Невідомий"}</h3>
                 <p className="text-sm text-muted-foreground">онлайн</p>

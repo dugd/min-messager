@@ -1,7 +1,7 @@
 import { FileText, MessageCircle, MessageSquare, Search } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { CustomAvatar } from "./CustomAvatar";
 import { Input } from "./ui/input";
 import { cn } from "./ui/utils";
 
@@ -60,10 +60,7 @@ export function AppHeader() {
       </div>
 
       <Link to={`/profile/${authUser?.username}`}>
-        <Avatar className="cursor-pointer hover:ring-2 hover:ring-primary transition-all">
-          <AvatarImage src={authUser?.avatar_url} />
-          <AvatarFallback>ME</AvatarFallback>
-        </Avatar>
+        <CustomAvatar name={authUser?.name || "M E"} avatarUrl={authUser?.avatar_url} size="lg" className="cursor-pointer hover:ring-2 hover:ring-primary transition-all"/>
       </Link>
     </header>
   );
