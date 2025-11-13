@@ -18,6 +18,8 @@ export type MessageWithSender = Message & {
     sender: UserParticipant;
 }
 
+// Payloads
+// Used for sending a direct message (first message in a direct conversation)
 export type SendDirectMessagePayload = {
     recipient_id: number;
     body: string;
@@ -25,8 +27,7 @@ export type SendDirectMessagePayload = {
     reply_to_id?: number | null;
 }
 
-// Payloads
-export type SendGroupMessagePayload = {
+export type SendConversationMessagePayload = {
     body: string;
     type: messageType;
     reply_to_id?: number | null;
