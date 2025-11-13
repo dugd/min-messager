@@ -6,15 +6,35 @@ import { GroupCreateModal } from "../components/GroupCreateModal";
 import { Sidebar } from "../components/Sidebar";
 import { UserSearchDialog } from "../components/UserSearchDialog";
 import { Button } from "../components/ui/button";
+import { useConversations } from "../hooks/api/useConversation";
+import { useMe } from "../hooks/api/useUser";
 import type { UserSearch } from "../types/user";
+import { getOtherParticipant } from "../utils/conversation";
 
 export default function Chats() {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [isGroupCreateOpen, setIsGroupCreateOpen] = useState(false);
   const navigate = useNavigate();
+  const { data: conversations = [] } = useConversations();
+  const { data: currentUser } = useMe();
 
   const handleUserSelect = (user: UserSearch) => {
-    navigate(`/chats/new/${user.id}`);
+    if (!currentUser) return;
+
+    // Check if a direct conversation already exists with this user
+    const existingConversation = conversations.find((conv) => {
+      if (conv.type !== 'direct') return false;
+      const otherParticipant = getOtherParticipant(conv, currentUser.id);
+      return otherParticipant?.id === user.id;
+    });
+
+    if (existingConversation) {
+      // Navigate to existing conversation
+      navigate(`/chats/${existingConversation.id}`);
+    } else {
+      // Navigate to draft chat
+      navigate(`/chats/new/${user.id}`);
+    }
   };
 
   return (

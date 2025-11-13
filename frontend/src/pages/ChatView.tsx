@@ -43,7 +43,7 @@ export default function ChatView() {
         body: messageBody,
         type: 'text',
       });
-    } catch (error) {
+    } catch {
       toast.error('Failed to send message');
     }
   };

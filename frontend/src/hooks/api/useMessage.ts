@@ -19,7 +19,11 @@ export const messageKeys = {
 export const useConversationMessages = (conversationId: number, enabled = true) => {
   return useQuery({
     queryKey: messageKeys.list(conversationId),
-    queryFn: () => MessageApi.loadMessages(conversationId.toString(), undefined, 50),
+    queryFn: async () => {
+      const messages = await MessageApi.loadMessages(conversationId.toString(), undefined, 50);
+      // Reverse to show oldest first (at top)
+      return messages.reverse();
+    },
     enabled: enabled && !!conversationId,
   });
 };
@@ -34,7 +38,7 @@ export const useLoadMoreMessages = (conversationId: number) => {
     onSuccess: (newMessages) => {
       queryClient.setQueryData<Message[]>(
         messageKeys.list(conversationId),
-        (oldMessages = []) => [...oldMessages, ...newMessages]
+        (oldMessages = []) => [...newMessages.reverse(), ...oldMessages]
       );
     },
   });
