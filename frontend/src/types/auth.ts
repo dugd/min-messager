@@ -1,9 +1,14 @@
+import type { visibility } from './common';
+
 // User information returned from auth
 export type AuthUser = {
   id: number;
   name: string;
   username: string;
   email: string;
+  avatar_url?: string;
+  visibility: visibility;
+  created_at: string; // ISO date string
 };
 
 // Auth context state and methods
@@ -23,6 +28,22 @@ export type AuthState = {
 };
 
 // API response types
+
+// Payloads
+export type LoginPayload = {
+  email: string;
+  password: string;
+};
+
+export type RegisterPayload = {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+  password_confirmation: string;
+};
+
+// Responses
 export type AuthResponse = {
   user: AuthUser;
   token: string;
@@ -30,4 +51,8 @@ export type AuthResponse = {
 
 export type LogoutResponse = {
   ok: boolean;
+};
+
+export type MeResponse = {
+  user: AuthUser;
 };

@@ -14,7 +14,7 @@
 ## 2. Технології
 
 - **Back-end:** Laravel 12, Sanctum, Broadcasting (soketi / laravel-websockets), Redis, MySQL, Queues (database).
-- **Front-end:** React + Vite + TypeScript + TailWind, React Query, Laravel Echo.
+- **Front-end:** React + Vite + TypeScript + TailWind, React Query (REST), Zustand (Realtime), Laravel Echo (Events).
 - **Інфраструктура:** Docker Compose (php-fpm, nginx, mysql, redis, websockets, node).
 - **Тести:** PHP Unit / Pest, Vitest / Jest.
 - **Лінтинг:** PHP CS Fixer, ESLint + Prettier.

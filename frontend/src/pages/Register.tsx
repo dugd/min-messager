@@ -1,11 +1,11 @@
+import { Loader2, Lock, Mail, MessageCircle, User } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
 import { Button } from "../components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
 import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../components/ui/card";
-import { MessageCircle, Mail, Lock, User, Loader2 } from "lucide-react";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Register() {
   const [name, setName] = useState("");
@@ -85,7 +85,7 @@ export default function Register() {
         password_confirmation: confirmPassword,
       });
       navigate("/chats");
-    } catch (error) {
+    } catch {
       setErrors({ general: "Помилка реєстрації. Спробуйте інший email або username" });
     } finally {
       setIsLoading(false);
