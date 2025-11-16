@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { AppHeader } from "../components/AppHeader";
-import { Sidebar } from "../components/Sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
@@ -134,10 +133,8 @@ export default function Posts() {
     <div className="h-screen flex flex-col bg-background">
       <AppHeader />
 
-      <div className="flex-1 flex overflow-hidden">
-        <Sidebar />
-
-        <main className="flex-1 overflow-y-auto bg-background">
+      <div className="flex-1 overflow-hidden">
+        <main className="flex-1 overflow-y-auto bg-background h-full">
           <div className="max-w-2xl mx-auto p-6 space-y-6">
             {/* Post Composer */}
             <Card className="bg-card border-border p-6">
