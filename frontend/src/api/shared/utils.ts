@@ -37,3 +37,15 @@ export async function patch<T>(path: string, body?: unknown): Promise<T> {
     throw error;
   }
 }
+
+export async function del<T>(path: string): Promise<T> {
+  try {
+    const res: AxiosResponse<T> = await api.delete(path);
+    return res.data;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data || error.message);
+    }
+    throw error;
+  }
+}

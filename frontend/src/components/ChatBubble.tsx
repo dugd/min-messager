@@ -1,14 +1,20 @@
 import { Check, CheckCheck } from "lucide-react";
 import { cn } from "./ui/utils";
+import type { Message } from "../types/message";
+import { formatMessageTime, isMyMessage, isEditedMessage, isDeletedMessage } from "../utils/message";
 
 interface ChatBubbleProps {
-  message: string;
-  time: string;
-  isMine: boolean;
+  message: Message;
+  currentUserId: number;
   isRead?: boolean;
 }
 
-export function ChatBubble({ message, time, isMine, isRead }: ChatBubbleProps) {
+export function ChatBubble({ message, currentUserId, isRead }: ChatBubbleProps) {
+  const isMine = isMyMessage(message, currentUserId);
+  const isEdited = isEditedMessage(message);
+  const isDeleted = isDeletedMessage(message);
+  const time = formatMessageTime(message.created_at);
+
   return (
     <div className={cn("flex mb-4 animate-in fade-in-0 slide-in-from-bottom-2", isMine ? "justify-end" : "justify-start")}>
       <div
@@ -17,9 +23,18 @@ export function ChatBubble({ message, time, isMine, isRead }: ChatBubbleProps) {
           isMine ? "bg-primary text-white rounded-br-sm" : "bg-secondary text-foreground rounded-bl-sm"
         )}
       >
-        <p className="break-words">{message}</p>
+        <p className="break-words">
+          {isDeleted ? (
+            <span className="italic opacity-70">This message was deleted</span>
+          ) : (
+            message.body
+          )}
+        </p>
         <div className={cn("flex items-center gap-1 justify-end mt-1", isMine ? "text-white/70" : "text-muted-foreground")}>
-          <span className="text-xs">{time}</span>
+          <span className="text-xs">
+            {time}
+            {isEdited && !isDeleted && ' (edited)'}
+          </span>
           {isMine && (
             <span>
               {isRead ? (

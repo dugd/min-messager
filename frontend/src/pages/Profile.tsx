@@ -1,8 +1,8 @@
 import { Edit, Grid, Heart, MessageCircle } from "lucide-react";
 import { useParams } from "react-router-dom";
 import { AppHeader } from "../components/AppHeader";
+import { CustomAvatar } from "../components/CustomAvatar";
 import { Sidebar } from "../components/Sidebar";
-import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
 import { useUserPosts, useUserProfile } from "../hooks/api/useUser";
@@ -53,7 +53,6 @@ export default function Profile() {
     );
   }
   const avatarUrl = profileUser.avatar_url || `https://api.dicebear.com/7.x/avataaars/svg?seed=${profileUser.username}`;
-  const initials = profileUser.name.split(' ').map(n => n[0]).join('').toUpperCase();
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -67,10 +66,7 @@ export default function Profile() {
             {/* Profile Header */}
             <Card className="bg-card border-border p-8">
               <div className="flex flex-col md:flex-row gap-6 items-center md:items-start">
-                <Avatar className="w-32 h-32">
-                  <AvatarImage src={avatarUrl} />
-                  <AvatarFallback>{initials}</AvatarFallback>
-                </Avatar>
+                <CustomAvatar avatarUrl={avatarUrl} name={profileUser.name} size="xxl"/>
 
                 <div className="flex-1 text-center md:text-left">
                   <h1 className="text-3xl mb-2">{profileUser.name}</h1>
@@ -155,10 +151,7 @@ export default function Profile() {
                         className="bg-card border-border p-6 hover:bg-[#1F1F1F] transition-colors cursor-pointer"
                       >
                         <div className="flex items-start gap-3 mb-4">
-                          <Avatar>
-                            <AvatarImage src={avatarUrl} />
-                            <AvatarFallback>{initials}</AvatarFallback>
-                          </Avatar>
+                          <CustomAvatar avatarUrl={avatarUrl} name={profileUser.name} />
                           <div className="flex-1">
                             <h3>{profileUser.name}</h3>
                             <p className="text-sm text-muted-foreground">{timeText}</p>

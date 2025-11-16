@@ -5,13 +5,15 @@ import { useState } from "react";
 
 interface MessageInputProps {
   onSend?: (message: string) => void;
+  isLoading?: boolean;
+  disabled?: boolean;
 }
 
-export function MessageInput({ onSend }: MessageInputProps) {
+export function MessageInput({ onSend, isLoading = false, disabled = false }: MessageInputProps) {
   const [message, setMessage] = useState("");
 
   const handleSend = () => {
-    if (message.trim()) {
+    if (message.trim() && !isLoading && !disabled) {
       onSend?.(message);
       setMessage("");
     }
@@ -56,10 +58,14 @@ export function MessageInput({ onSend }: MessageInputProps) {
         <Button
           size="icon"
           onClick={handleSend}
-          disabled={!message.trim()}
+          disabled={!message.trim() || isLoading || disabled}
           className="shrink-0 bg-primary hover:bg-primary/90 rounded-full"
         >
-          <Send className="w-5 h-5" />
+          {isLoading ? (
+            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+          ) : (
+            <Send className="w-5 h-5" />
+          )}
         </Button>
       </div>
     </div>

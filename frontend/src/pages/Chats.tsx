@@ -1,15 +1,41 @@
 import { MessageSquare, Plus, Users } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { AppHeader } from "../components/AppHeader";
 import { GroupCreateModal } from "../components/GroupCreateModal";
 import { Sidebar } from "../components/Sidebar";
+import { UserSearchDialog } from "../components/UserSearchDialog";
 import { Button } from "../components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../components/ui/dialog";
-import { Input } from "../components/ui/input";
+import { useConversations } from "../hooks/api/useConversation";
+import { useMe } from "../hooks/api/useUser";
+import type { UserSearch } from "../types/user";
+import { getOtherParticipant } from "../utils/conversation";
 
 export default function Chats() {
   const [isNewChatOpen, setIsNewChatOpen] = useState(false);
   const [isGroupCreateOpen, setIsGroupCreateOpen] = useState(false);
+  const navigate = useNavigate();
+  const { data: conversations = [] } = useConversations();
+  const { data: currentUser } = useMe();
+
+  const handleUserSelect = (user: UserSearch) => {
+    if (!currentUser) return;
+
+    // Check if a direct conversation already exists with this user
+    const existingConversation = conversations.find((conv) => {
+      if (conv.type !== 'direct') return false;
+      const otherParticipant = getOtherParticipant(conv, currentUser.id);
+      return otherParticipant?.id === user.id;
+    });
+
+    if (existingConversation) {
+      // Navigate to existing conversation
+      navigate(`/chats/${existingConversation.id}`);
+    } else {
+      // Navigate to draft chat
+      navigate(`/chats/new/${user.id}`);
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col bg-background">
@@ -21,25 +47,13 @@ export default function Chats() {
 
           <div className="p-4 border-t border-border">
             <div className="flex gap-2">
-              <Dialog open={isNewChatOpen} onOpenChange={setIsNewChatOpen}>
-                <DialogTrigger asChild>
-                  <Button className="flex-1 bg-primary hover:bg-primary/90">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Новий чат
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-card border-border">
-                  <DialogHeader>
-                    <DialogTitle>Новий чат</DialogTitle>
-                  </DialogHeader>
-                  <div className="space-y-4">
-                    <Input placeholder="Введіть ім'я користувача..." className="bg-secondary border-0" />
-                    <Button className="w-full bg-primary hover:bg-primary/90">
-                      Створити чат
-                    </Button>
-                  </div>
-                </DialogContent>
-              </Dialog>
+              <Button
+                onClick={() => setIsNewChatOpen(true)}
+                className="flex-1 bg-primary hover:bg-primary/90"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Новий чат
+              </Button>
 
               <Button
                 onClick={() => setIsGroupCreateOpen(true)}
@@ -65,6 +79,13 @@ export default function Chats() {
           </div>
         </main>
       </div>
+
+      <UserSearchDialog
+        open={isNewChatOpen}
+        onOpenChange={setIsNewChatOpen}
+        onUserSelect={handleUserSelect}
+        title="Новий чат"
+      />
 
       <GroupCreateModal
         open={isGroupCreateOpen}

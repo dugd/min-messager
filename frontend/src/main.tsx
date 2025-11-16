@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import './index.css';
 import Chats from './pages/Chats';
 import ChatView from './pages/ChatView';
+import DraftChatView from './pages/DraftChatView';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Posts from './pages/Posts';
@@ -34,6 +35,7 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/login" element={<Login/>}/>
             <Route path="/register" element={<Register/>}/>
             <Route path="/chats" element={<Chats/>}/>
+            <Route path="/chats/new/:recipientId" element={<DraftChatView/>}/>
             <Route path="/chats/:id" element={<ChatView/>}/>
             <Route path="/posts" element={<Posts/>}/>
             <Route path="/profile/:username" element={<Profile/>}/>

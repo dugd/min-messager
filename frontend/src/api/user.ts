@@ -1,5 +1,5 @@
 import type { MyUser, MyUserResponse, UpdateProfilePayload, UserProfile, UserProfileResponse, UserSearchResponse } from '../types/user';
-import { get, patch } from './utils';
+import { get, patch } from './shared/utils';
 
 export const UserApi = {
   getProfileByUsername: async (username: string): Promise<UserProfile> => {
