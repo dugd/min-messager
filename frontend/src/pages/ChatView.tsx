@@ -127,6 +127,7 @@ export default function ChatView() {
                 key={msg.id}
                 message={msg}
                 currentUserId={currentUser.id}
+                conversation={conversation}
               />
             ))}
             <div ref={messagesEndRef} />
