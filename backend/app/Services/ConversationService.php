@@ -59,4 +59,103 @@ class ConversationService
 
         return $conversation;
     }
+
+    /**
+     * Create a group conversation.
+     *
+     * @param int $ownerId Owner user ID
+     * @param string $title Group conversation title
+     * @param array $participantIds Array of participant user IDs
+     * @param ?string $avatar_url Optional group avatar URL
+     * @return Conversation
+     */
+    public function createGroup(int $ownerId, string $title, array $participantIds, ?string $avatar_url = null): Conversation {
+        $conversation = Conversation::create([
+            'type' => 'group',
+            'title' => $title,
+            'avatar_url' => $avatar_url,
+        ]);
+
+        // Attach owner
+        $conversation->participants()->attach($ownerId, ['role' => 'owner']);
+
+        // Attach other participants
+        $participantAttachments = array_fill_keys($participantIds, ['role' => 'member']);
+        $conversation->participants()->attach($participantAttachments);
+
+        return $conversation;
+    }
+
+    /**
+     * Update conversation details (title, avatar_url).
+     *
+     * @param int $conversationId
+     * @param array $data
+     * @return Conversation
+     */
+    public function updateConversation(int $conversationId, array $data): Conversation
+    {
+        $conversation = Conversation::findOrFail($conversationId);
+        $conversation->update($data);
+
+        return $conversation;
+    }
+
+    /**
+     * Add participants to a group conversation.
+     *
+     * @param int $conversationId
+     * @param array $participantIds
+     * @return void
+     */
+    public function addParticipants(int $conversationId, array $participantIds): void
+    {
+        $conversation = Conversation::findOrFail($conversationId);
+
+        $existingParticipantIds = $conversation->participants()->pluck('user_id')->toArray();
+        $newParticipantIds = array_diff($participantIds, $existingParticipantIds);
+
+        if (!empty($newParticipantIds)) {
+            $participantAttachments = array_fill_keys($newParticipantIds, ['role' => 'member']);
+            $conversation->participants()->attach($participantAttachments);
+        }
+    }
+
+    /**
+     * Remove a participant from a group conversation.
+     *
+     * @param int $conversationId
+     * @param int $userId
+     * @return void
+     */
+    public function removeParticipant(int $conversationId, int $userId): void
+    {
+        $conversation = Conversation::findOrFail($conversationId);
+        $conversation->participants()->detach($userId);
+    }
+
+    /**
+     * User leaves a group conversation.
+     *
+     * @param int $conversationId
+     * @param int $userId
+     * @return void
+     */
+    public function leaveConversation(int $conversationId, int $userId): void
+    {
+        $conversation = Conversation::findOrFail($conversationId);
+        $conversation->participants()->detach($userId);
+    }
+
+    /**
+     * Delete a conversation and all its messages.
+     *
+     * @param int $conversationId
+     * @return void
+     */
+    public function deleteConversation(int $conversationId): void
+    {
+        $conversation = Conversation::findOrFail($conversationId);
+        $conversation->delete();
+    }
 }

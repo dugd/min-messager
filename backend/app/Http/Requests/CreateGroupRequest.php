@@ -5,14 +5,14 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class SendDirectMessageRequest extends FormRequest
+class CreateGroupRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true; # blocklist check?
+        return true;
     }
 
     /**
@@ -25,15 +25,26 @@ class SendDirectMessageRequest extends FormRequest
         $ownerId = $this->user()->id;
 
         return [
-            'recipient_id' => [
-                'required',
-                'exists:users,id',
-                Rule::notIn([$ownerId]), // Prevent sending a message to yourself
-            ],
-            'body' => [
+            'title' => [
                 'required',
                 'string',
-                'max:10000',
+                'max:255',
+            ],
+            'avatar_url' => [
+                'nullable',
+                'url',
+                'max:500',
+            ],
+            'participants' => [
+                'required',
+                'array',
+                'min:1',
+            ],
+            'participants.*' => [
+                'integer',
+                'distinct',
+                'exists:users,id',
+                Rule::notIn([$ownerId]), // Owner is added automatically
             ],
         ];
     }
