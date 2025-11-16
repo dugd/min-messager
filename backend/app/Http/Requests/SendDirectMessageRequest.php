@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class SendDirectMessageRequest extends FormRequest
 {
@@ -21,10 +22,13 @@ class SendDirectMessageRequest extends FormRequest
      */
     public function rules(): array
     {
+        $ownerId = $this->user()->id;
+
         return [
             'recipient_id' => [
                 'required',
                 'exists:users,id',
+                Rule::notIn([$ownerId]), // Prevent sending a message to yourself
             ],
             'body' => [
                 'required',
