@@ -42,7 +42,7 @@ export type CreateConversationRequest = {
     type: conversationType;
     title?: string;
     avatar_url?: string;
-    participant_ids: number[];
+    participants: number[];
 }
 
 export type UpdateConversationRequest = {
@@ -51,5 +51,5 @@ export type UpdateConversationRequest = {
 }
 
 export type AddParticipantsRequest = {
-    user_ids: number[];
+    participants: number[];
 }
