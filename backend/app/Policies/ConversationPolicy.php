@@ -33,7 +33,15 @@ class ConversationPolicy
      */
     public function update(User $user, Conversation $conversation): bool
     {
-        return false; // TODO: Implement update method.
+        if ($conversation->type !== 'group') {
+            return false;
+        }
+
+        $participant = $conversation->participants()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $participant && in_array($participant->pivot->role, ['owner', 'admin']);
     }
 
     /**
@@ -42,7 +50,69 @@ class ConversationPolicy
      */
     public function delete(User $user, Conversation $conversation): bool
     {
-        return false; // TODO: Implement delete method.
+        if ($conversation->type === 'direct') {
+            return $conversation->participants()
+                ->where('user_id', $user->id)
+                ->exists();
+        }
+
+        $participant = $conversation->participants()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $participant && $participant->pivot->role === 'owner';
+    }
+
+    /**
+     * Only owner or admin can add participants to group conversation.
+     */
+    public function addParticipants(User $user, Conversation $conversation): bool
+    {
+        if ($conversation->type !== 'group') {
+            return false;
+        }
+
+        $participant = $conversation->participants()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $participant && in_array($participant->pivot->role, ['owner', 'admin']);
+    }
+
+    /**
+     * Owner/admin can remove anyone, or user can remove themselves.
+     */
+    public function removeParticipant(User $user, Conversation $conversation, User $targetUser): bool
+    {
+        if ($conversation->type !== 'group') {
+            return false;
+        }
+
+        if ($user->id === $targetUser->id) {
+            return true;
+        }
+
+        $participant = $conversation->participants()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $participant && in_array($participant->pivot->role, ['owner', 'admin']);
+    }
+
+    /**
+     * Any participant can leave, except owner.
+     */
+    public function leave(User $user, Conversation $conversation): bool
+    {
+        if ($conversation->type !== 'group') {
+            return false;
+        }
+
+        $participant = $conversation->participants()
+            ->where('user_id', $user->id)
+            ->first();
+
+        return $participant && $participant->pivot->role !== 'owner';
     }
 
     /**
