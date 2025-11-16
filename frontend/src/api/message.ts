@@ -6,7 +6,7 @@ export const MessageApi = {
   loadMessages: async (conversationId: string, beforeMessageId?: number, limit: number = 50 ): Promise<Message[]> => {
     const params = new URLSearchParams();
     if (beforeMessageId !== undefined) {
-      params.append('beforeMessageId', beforeMessageId.toString());
+      params.append('before_id', beforeMessageId.toString());
     }
     params.append('limit', limit.toString());
 
