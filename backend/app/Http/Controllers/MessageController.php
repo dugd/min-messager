@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageDeleted;
+use App\Events\MessageSent;
+use App\Events\MessageUpdated;
 use App\Http\Requests\SendDirectMessageRequest;
 use App\Http\Requests\SendGroupMessageRequest;
 use App\Http\Requests\UpdateMessageRequest;
@@ -50,7 +53,7 @@ class MessageController extends Controller
 
         $message = $this->messageService->create($conversation->id, auth()->id(), $data['body']);
 
-        // TODO: Broadcast message to receiver
+        broadcast(new MessageSent($message))->toOthers();
 
         return response()->json([
             'message' => $message,
@@ -67,7 +70,7 @@ class MessageController extends Controller
 
         $message = $this->messageService->create($conversation->id, auth()->id(), $data['body']);
 
-        // TODO: Broadcast message to group members
+        broadcast(new MessageSent($message))->toOthers();
 
         return response()->json([
             'message' => $message,
@@ -85,7 +88,7 @@ class MessageController extends Controller
 
         $this->messageService->update($message, $data['body']);
 
-        // Broadcast MessageUpdated event
+        broadcast(new MessageUpdated($message))->toOthers();
 
         return response()->json([
             'message' => $message,
@@ -101,7 +104,7 @@ class MessageController extends Controller
 
         $this->messageService->delete($message);
 
-        // Broadcast MessageDeleted event
+        broadcast(new MessageDeleted($message))->toOthers();
 
         return response()->json(['message' => 'Message deleted'], 200);
     }
