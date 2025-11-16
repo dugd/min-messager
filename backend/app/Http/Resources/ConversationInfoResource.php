@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ConversationResource extends JsonResource
+class ConversationInfoResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -21,8 +21,6 @@ class ConversationResource extends JsonResource
             'avatar_url' => $this->avatar_url,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'participants' => ParticipantResource::collection($this->whenLoaded('participants')),
-            'last_message' => $this->whenLoaded('lastMessage'),
         ];
     }
 }

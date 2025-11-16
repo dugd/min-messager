@@ -14,6 +14,7 @@ class Conversation extends Model
         'type',
         'title',
         'owner_id',
+        'avatar_url',
     ];
 
     /**
