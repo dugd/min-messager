@@ -9,7 +9,7 @@ use Illuminate\Auth\Access\Response;
 class ConversationPolicy
 {
     /**
-     * Determine whether the user can view the model.
+     * If participant is in conversation.
      */
     public function view(User $user, Conversation $conversation): bool
     {
@@ -19,23 +19,34 @@ class ConversationPolicy
     }
 
     /**
-     * Determine whether the user can update the model.
+     * NOTE: It's for group conversation.
+     * Always allow user to create conversation.
+    */
+    public function create(User $user): bool
+    {
+        return true; // Allow all users to create conversations
+    }
+
+    /**
+     * NODE: It's for group conversation.
+     * Only allow owner or admin participant to update conversation.
      */
     public function update(User $user, Conversation $conversation): bool
     {
-        return false;
+        return false; // TODO: Implement update method.
     }
 
     /**
-     * Determine whether the user can delete the model.
+     * For direct: user can delete conversation only if he is participant.
+     * For group: only owner can delete conversation.
      */
     public function delete(User $user, Conversation $conversation): bool
     {
-        return false;
+        return false; // TODO: Implement delete method.
     }
 
     /**
-     * Determine whether the user can send a message.
+     * If participant is in conversation.
      */
     public function send(User $user, Conversation $conversation): bool
     {

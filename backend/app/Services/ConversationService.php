@@ -59,4 +59,30 @@ class ConversationService
 
         return $conversation;
     }
+
+    /**
+     * Create a group conversation.
+     *
+     * @param int $ownerId Owner user ID
+     * @param string $title Group conversation title
+     * @param array $participantIds Array of participant user IDs
+     * @param ?string $avatar_url Optional group avatar URL
+     * @return Conversation
+     */
+    public function createGroup(int $ownerId, string $title, array $participantIds, ?string $avatar_url = null): Conversation {
+        $conversation = Conversation::create([
+            'type' => 'group',
+            'title' => $title,
+            'avatar_url' => $avatar_url,
+        ]);
+
+        // Attach owner
+        $conversation->participants()->attach($ownerId, ['role' => 'owner']);
+
+        // Attach other participants
+        $participantAttachments = array_fill_keys($participantIds, ['role' => 'member']);
+        $conversation->participants()->attach($participantAttachments);
+
+        return $conversation;
+    }
 }
