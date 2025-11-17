@@ -42,12 +42,12 @@ export const useConversationRealtime = (conversationId: number | null) => {
     const channel = echo.private(`conversation.${conversationId}`);
 
     // Listen for new messages
-    channel.listen('MessageSent', (event: MessageSentEvent) => {
+    channel.listen('.MessageSent', (event: MessageSentEvent) => {
       addMessage(conversationId, event.message);
     });
 
     // Listen for message updates
-    channel.listen('MessageUpdated', (event: MessageUpdatedEvent) => {
+    channel.listen('.MessageUpdated', (event: MessageUpdatedEvent) => {
       updateMessage(event.message.id, {
         body: event.message.body,
         edited_at: event.message.edited_at,
@@ -55,15 +55,15 @@ export const useConversationRealtime = (conversationId: number | null) => {
     });
 
     // Listen for message deletions
-    channel.listen('MessageDeleted', (event: MessageDeletedEvent) => {
+    channel.listen('.MessageDeleted', (event: MessageDeletedEvent) => {
       deleteMessage(event.message_id);
     });
 
     // Cleanup: leave channel and remove listeners
     return () => {
-      channel.stopListening('MessageSent');
-      channel.stopListening('MessageUpdated');
-      channel.stopListening('MessageDeleted');
+      channel.stopListening('.MessageSent');
+      channel.stopListening('.MessageUpdated');
+      channel.stopListening('.MessageDeleted');
       echo.leave(`conversation.${conversationId}`);
     };
   }, [echo, conversationId, addMessage, updateMessage, deleteMessage]);
