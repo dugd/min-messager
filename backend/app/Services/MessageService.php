@@ -18,11 +18,13 @@ class MessageService
      */
     public function create(int $conversationId, int $senderId, string $body): Message
     {
-        return Message::create([
+        $message = Message::create([
             'conversation_id' => $conversationId,
             'sender_id' => $senderId,
             'body' => $body,
         ]);
+
+        return $message->fresh();
     }
 
     /**

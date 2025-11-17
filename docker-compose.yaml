@@ -23,7 +23,29 @@ services:
       - ./backend:/var/www/html
     depends_on:
       - mysql
+      - redis
     networks: [appnet]
+
+  ws:
+    image: quay.io/soketi/soketi:1.4-16-alpine
+    container_name: minmess_ws
+    environment:
+      SOKETI_DEBUG: "1"
+
+      SOKETI_DEFAULT_APP_ID: ${SOKETI_APP_ID}
+      SOKETI_DEFAULT_APP_KEY: ${SOKETI_APP_KEY}
+      SOKETI_DEFAULT_APP_SECRET: ${SOKETI_APP_SECRET}
+
+      SOKETI_DEFAULT_APP_MAX_CONNS: 1000
+      SOKETI_DEFAULT_APP_MAX_BACKEND_EVENTS_PER_SEC: 200
+      SOKETI_DEFAULT_APP_MAX_CLIENT_EVENTS_PER_SEC: 200
+      SOKETI_DEFAULT_APP_MAX_READ_REQ_PER_SEC: 200
+
+      SOKETI_PORT: 6001
+    ports:
+      - "6001:6001"
+    networks:
+      - appnet
 
   mysql:
     image: mysql:8
@@ -39,6 +61,17 @@ services:
     ports:
       - "3306:3306"
     networks: [appnet]
+
+  redis:
+    image: redis:7-alpine
+    container_name: minmess_redis
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - appnet
 
   nginx:
     image: nginx:alpine
@@ -68,6 +101,7 @@ services:
 
 volumes:
   db_data:
+  redis_data:
 
 networks:
   appnet:

@@ -12,6 +12,7 @@ import Posts from './pages/Posts';
 import Profile from './pages/Profile';
 import Register from './pages/Register';
 import { AuthProvider } from './providers/authProvider';
+import { EchoProvider } from './providers/echoProvider';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,7 +28,8 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <BrowserRouter>
+        <EchoProvider>
+          <BrowserRouter>
           <Toaster position="top-center" richColors />
           <Routes>
             <Route path="/" element={<Home/>}/>
@@ -39,7 +41,8 @@ createRoot(document.getElementById('root')!).render(
             <Route path="/posts" element={<Posts/>}/>
             <Route path="/profile/:username" element={<Profile/>}/>
           </Routes>
-        </BrowserRouter>
+          </BrowserRouter>
+        </EchoProvider>
       </AuthProvider>
     </QueryClientProvider>
   </StrictMode>,

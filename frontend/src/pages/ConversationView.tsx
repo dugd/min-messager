@@ -17,11 +17,11 @@ import {
 import { useConversationById } from "../hooks/api/useConversation";
 import {
   useConversationMessages,
-  useLoadMoreMessages,
   useSendConversationMessage,
   useSendDirectMessage,
 } from "../hooks/api/useMessage";
 import { useMe, useUserProfile } from "../hooks/api/useUser";
+import { useConversationRealtime } from "../hooks/useConversationRealtime";
 import type { Conversation } from "../types/conversation";
 import { getConversationAvatar, getConversationTitle } from "../utils/conversation";
 
@@ -43,7 +43,6 @@ export default function ConversationView({ type }: ConversationViewProps) {
 
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollButton, setShowScrollButton] = useState(false);
-  const [hasMore, setHasMore] = useState(true);
 
   const { data: currentUser } = useMe();
 
@@ -52,12 +51,20 @@ export default function ConversationView({ type }: ConversationViewProps) {
     conversationId || 0,
     type === 'existing' && !!conversationId
   );
-  const { data: messages = [], isLoading: messagesLoading } = useConversationMessages(
-    conversationId || 0,
-    type === 'existing' && !!conversationId
-  );
+  const {
+    data,
+    isLoading: messagesLoading,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useConversationMessages(conversationId || 0, type === 'existing' && !!conversationId);
+
+  const messages = data?.messages || [];
+
   const sendConversationMessage = useSendConversationMessage(conversationId || 0);
-  const loadMore = useLoadMoreMessages(conversationId || 0);
+
+  // Real-time updates for existing conversations
+  useConversationRealtime(conversationId || null);
 
   // For draft conversations
   const { data: recipient, isLoading: recipientLoading } = useUserProfile(
@@ -88,7 +95,7 @@ export default function ConversationView({ type }: ConversationViewProps) {
     if (isAtBottom && messages.length > 0) {
       scrollToBottom(true);
     }
-  }, [messages, isAtBottom, scrollToBottom]);
+  }, [messages.length, isAtBottom, scrollToBottom]);
 
   // Initial scroll to bottom on load
   useEffect(() => {
@@ -105,28 +112,20 @@ export default function ConversationView({ type }: ConversationViewProps) {
     const trigger = loadMoreTriggerRef.current;
     const container = messagesContainerRef.current;
 
-    if (!trigger || !container || !hasMore || loadMore.isPending) return;
+    if (!trigger || !container || !hasNextPage || isFetchingNextPage) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const firstEntry = entries[0];
-        if (firstEntry.isIntersecting && messages.length > 0 && hasMore && !loadMore.isPending) {
-          const oldestMessage = messages[0];
-
+        if (firstEntry.isIntersecting && messages.length > 0 && hasNextPage && !isFetchingNextPage) {
           previousScrollHeightRef.current = container.scrollHeight;
 
-          loadMore.mutate(oldestMessage.id, {
-            onSuccess: (newMessages) => {
-              if (newMessages.length < 50) {
-                setHasMore(false);
-              }
-
-              requestAnimationFrame(() => {
-                const newScrollHeight = container.scrollHeight;
-                const scrollDiff = newScrollHeight - previousScrollHeightRef.current;
-                container.scrollTop = container.scrollTop + scrollDiff;
-              });
-            },
+          fetchNextPage().then(() => {
+            requestAnimationFrame(() => {
+              const newScrollHeight = container.scrollHeight;
+              const scrollDiff = newScrollHeight - previousScrollHeightRef.current;
+              container.scrollTop = container.scrollTop + scrollDiff;
+            });
           });
         }
       },
@@ -139,7 +138,7 @@ export default function ConversationView({ type }: ConversationViewProps) {
     observer.observe(trigger);
 
     return () => observer.disconnect();
-  }, [type, messages, hasMore, loadMore]);
+  }, [type, messages.length, hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const handleSendMessage = async (messageBody: string) => {
     try {
@@ -291,14 +290,14 @@ export default function ConversationView({ type }: ConversationViewProps) {
               <div ref={loadMoreTriggerRef} className="h-1" />
 
               {/* Loading indicator */}
-              {loadMore.isPending && (
+              {isFetchingNextPage && (
                 <div className="flex justify-center py-2">
                   <Loader2 className="w-5 h-5 animate-spin text-muted-foreground" />
                 </div>
               )}
 
               {/* No more messages */}
-              {!hasMore && messages.length > 0 && (
+              {!hasNextPage && messages.length > 0 && (
                 <div className="flex justify-center py-2">
                   <p className="text-xs text-muted-foreground">Початок розмови</p>
                 </div>
