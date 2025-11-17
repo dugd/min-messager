@@ -22,6 +22,7 @@ import {
   useSendDirectMessage,
 } from "../hooks/api/useMessage";
 import { useMe, useUserProfile } from "../hooks/api/useUser";
+import { useConversationRealtime } from "../hooks/useConversationRealtime";
 import type { Conversation } from "../types/conversation";
 import { getConversationAvatar, getConversationTitle } from "../utils/conversation";
 
@@ -58,6 +59,9 @@ export default function ConversationView({ type }: ConversationViewProps) {
   );
   const sendConversationMessage = useSendConversationMessage(conversationId || 0);
   const loadMore = useLoadMoreMessages(conversationId || 0);
+
+  // Real-time updates for existing conversations
+  useConversationRealtime(conversationId || null);
 
   // For draft conversations
   const { data: recipient, isLoading: recipientLoading } = useUserProfile(
