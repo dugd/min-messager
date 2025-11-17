@@ -4,6 +4,7 @@ import { EchoCtx } from '../context/echoContext';
 import { createEchoInstance } from '../services/echo';
 import { useAuth } from '../hooks/useAuth';
 import { getToken } from '../utils/tokenStorage';
+import { setEchoInstance } from '../api/shared/client';
 
 export function EchoProvider({ children }: PropsWithChildren) {
   const [echo, setEcho] = useState<Echo<any> | null>(null);
@@ -17,6 +18,7 @@ export function EchoProvider({ children }: PropsWithChildren) {
       const echoInstance = createEchoInstance({ authToken: token });
       echoRef.current = echoInstance;
       setEcho(echoInstance);
+      setEchoInstance(echoInstance);
     } else if (!user && echoRef.current) {
       echoRef.current.disconnect();
       echoRef.current = null;

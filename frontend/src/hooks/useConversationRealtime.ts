@@ -50,13 +50,6 @@ export const useConversationRealtime = (conversationId: number | null) => {
         (old) => {
           if (!old) return old;
 
-          // Check if message already exists (avoid duplicates)
-          const messageExists = old.pages.some((page) =>
-            page.some((msg) => msg.id === event.message.id)
-          );
-
-          if (messageExists) return old;
-
           // Add to the last page
           return {
             ...old,
