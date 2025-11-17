@@ -1,6 +1,8 @@
+import type { InfiniteData } from '@tanstack/react-query';
+import { useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
-import { useMessageStore } from '../stores/messageStore';
 import type { Message } from '../types/message';
+import { messageKeys } from './api/useMessage';
 import { useEcho } from './useEcho';
 
 type UpdatedMessage = {
@@ -34,7 +36,7 @@ interface MessageDeletedEvent {
  */
 export const useConversationRealtime = (conversationId: number | null) => {
   const { echo } = useEcho();
-  const { addMessage, updateMessage, deleteMessage } = useMessageStore();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (!echo || !conversationId) return;
@@ -43,20 +45,67 @@ export const useConversationRealtime = (conversationId: number | null) => {
 
     // Listen for new messages
     channel.listen('.MessageSent', (event: MessageSentEvent) => {
-      addMessage(conversationId, event.message);
+      queryClient.setQueryData<InfiniteData<Message[]>>(
+        messageKeys.list(conversationId),
+        (old) => {
+          if (!old) return old;
+
+          // Check if message already exists (avoid duplicates)
+          const messageExists = old.pages.some((page) =>
+            page.some((msg) => msg.id === event.message.id)
+          );
+
+          if (messageExists) return old;
+
+          // Add to the last page
+          return {
+            ...old,
+            pages: old.pages.map((page, index) =>
+              index === old.pages.length - 1 ? [...page, event.message] : page
+            ),
+          };
+        }
+      );
     });
 
     // Listen for message updates
     channel.listen('.MessageUpdated', (event: MessageUpdatedEvent) => {
-      updateMessage(event.message.id, {
-        body: event.message.body,
-        edited_at: event.message.edited_at,
-      });
+      queryClient.setQueryData<InfiniteData<Message[]>>(
+        messageKeys.list(conversationId),
+        (old) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page) =>
+              page.map((msg) =>
+                msg.id === event.message.id
+                  ? {
+                      ...msg,
+                      body: event.message.body,
+                      edited_at: event.message.edited_at,
+                    }
+                  : msg
+              )
+            ),
+          };
+        }
+      );
     });
 
     // Listen for message deletions
     channel.listen('.MessageDeleted', (event: MessageDeletedEvent) => {
-      deleteMessage(event.message_id);
+      queryClient.setQueryData<InfiniteData<Message[]>>(
+        messageKeys.list(conversationId),
+        (old) => {
+          if (!old) return old;
+
+          return {
+            ...old,
+            pages: old.pages.map((page) => page.filter((msg) => msg.id !== event.message_id)),
+          };
+        }
+      );
     });
 
     // Cleanup: leave channel and remove listeners
@@ -66,5 +115,5 @@ export const useConversationRealtime = (conversationId: number | null) => {
       channel.stopListening('.MessageDeleted');
       echo.leave(`conversation.${conversationId}`);
     };
-  }, [echo, conversationId, addMessage, updateMessage, deleteMessage]);
+  }, [echo, conversationId, queryClient]);
 };
